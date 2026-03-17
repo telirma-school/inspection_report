@@ -1,0 +1,185 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}Rapport {{ rapport_courant.rapport_number }} — TELIRMA{% endblock %}
+
+{% block contend %}
+<div class="page-header mb-3">
+  <div>
+    <h1>
+      <i class="fas fa-file-alt me-2" style="color:var(--steel)"></i>
+      {{ rapport_courant.titre|default:"Rapport sans titre" }}
+    </h1>
+    <p>
+      N° <strong>{{ rapport_courant.rapport_number }}</strong> &nbsp;·&nbsp;
+      Client : <strong>{{ rapport_courant.client.name }}</strong> &nbsp;·&nbsp;
+      Vérif. : <strong>{{ rapport_courant.date_verification }}</strong>
+    </p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <a href="{% url 'article:rapport_pdf' rapport_courant.rapport_number %}" class="btn btn-danger btn-sm">
+      <i class="fas fa-file-pdf me-1"></i>PDF
+    </a>
+    <a href="{% url 'article:crm' %}" class="btn btn-outline-primary btn-sm">
+      <i class="fas fa-arrow-left me-1"></i>CRM
+    </a>
+  </div>
+</div>
+
+<!-- Info cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="card border-0 p-3" style="-webkit-box-shadow:0 2px 10px rgba(13,43,94,0.07);box-shadow:0 2px 10px rgba(13,43,94,0.07)">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">N° Rapport</div>
+      <div style="font-weight:700;color:var(--navy);word-break:break-all;font-size:13px">{{ rapport_courant.rapport_number }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 p-3" style="-webkit-box-shadow:0 2px 10px rgba(13,43,94,0.07);box-shadow:0 2px 10px rgba(13,43,94,0.07)">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Client</div>
+      <div style="font-weight:700;color:var(--navy);word-break:break-word;font-size:13px">{{ rapport_courant.client.name }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 p-3" style="-webkit-box-shadow:0 2px 10px rgba(13,43,94,0.07);box-shadow:0 2px 10px rgba(13,43,94,0.07)">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Date vérif.</div>
+      <div style="font-weight:700;color:var(--navy);font-size:13px">{{ rapport_courant.date_verification }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="card border-0 p-3" style="-webkit-box-shadow:0 2px 10px rgba(13,43,94,0.07);box-shadow:0 2px 10px rgba(13,43,94,0.07)">
+      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px">Items</div>
+      <div class="stat-number" style="color:var(--steel)">{{ liste_rapport_item|length }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tableau items -->
+<div class="card border-0 mb-4" style="-webkit-box-shadow:0 2px 16px rgba(13,43,94,0.09);box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div class="card-header-blue d-flex justify-content-between align-items-center">
+    <span><i class="fas fa-fire-extinguisher me-2"></i>Items du rapport</span>
+    <span class="badge" style="background:rgba(255,255,255,0.2)">
+      {{ liste_rapport_item|length }} item{{ liste_rapport_item|length|pluralize }}
+    </span>
+  </div>
+  <div class="card-body p-0">
+    {% if liste_rapport_item %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th><i class="fas fa-map-marker-alt me-1"></i>Emplacement</th>
+            <th class="d-none d-sm-table-cell"><i class="fas fa-fire-extinguisher me-1"></i>Type</th>
+            <th><i class="fas fa-info-circle me-1"></i>Statut</th>
+            <th class="d-none d-md-table-cell"><i class="fas fa-clipboard me-1"></i>Observation</th>
+            {% if user.is_authenticated %}
+            <th class="text-center" style="width:90px">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in liste_rapport_item %}
+          <tr>
+            <td style="color:var(--muted);font-weight:600">{{ forloop.counter }}</td>
+            <td style="font-size:13px">{{ item.emplacement }}</td>
+            <td class="d-none d-sm-table-cell">
+              <span style="background:var(--ice);color:var(--navy);padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;white-space:nowrap">
+                {{ item.type_appareil }}
+              </span>
+            </td>
+            <td>
+              {% if item.statut_appareil == "conforme" %}
+                <span class="badge-conforme">✅ Conforme</span>
+              {% elif item.statut_appareil == "Hors service" %}
+                <span class="badge-horsservice">❌ H.S</span>
+              {% elif item.statut_appareil == "Vide" %}
+                <span class="badge-vide">⚠️ Vide</span>
+              {% else %}
+                <span class="badge-perime">🔴 {{ item.statut_appareil }}</span>
+              {% endif %}
+            </td>
+            <td class="d-none d-md-table-cell" style="font-size:12px;color:var(--muted)">
+              {{ item.observation|default:"—" }}
+            </td>
+            {% if user.is_authenticated %}
+            <td class="text-center" style="white-space:nowrap">
+              <a href="{% url 'article:modifie_item_rapport' item.id %}"
+                 class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a href="{% url 'article:delete_item_rapport' item.id item.rapport.rapport_number %}"
+                 class="btn btn-sm btn-outline-danger" title="Supprimer"
+                 onclick="return confirm('Supprimer cet item ?')">
+                <i class="fas fa-trash"></i>
+              </a>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+      <i class="fas fa-fire-extinguisher fa-2x mb-2 d-block" style="opacity:.3"></i>Aucun item dans ce rapport
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Formulaire ajout -->
+{% if user.is_authenticated %}
+<div class="card border-0" style="-webkit-box-shadow:0 2px 16px rgba(13,43,94,0.09);box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div style="height:4px;background:-webkit-linear-gradient(left,var(--success),#1a7a40);background:linear-gradient(90deg,var(--success),#1a7a40)"></div>
+  <div class="card-body p-4">
+    <h5 style="font-family:'Exo 2',sans-serif;font-weight:700;color:var(--navy);margin-bottom:20px">
+      <i class="fas fa-plus-circle me-2" style="color:var(--success)"></i>Ajouter un item
+    </h5>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="rapport" value="{{ rapport_courant.id }}"/>
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label"><i class="fas fa-map-marker-alt me-1" style="color:var(--steel)"></i>Emplacement *</label>
+          <input type="text" name="emplacement" class="form-control"
+                 placeholder="ex: Hall d'entrée — Couloir Nord" required/>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label"><i class="fas fa-fire-extinguisher me-1" style="color:var(--steel)"></i>Type d'appareil *</label>
+          <select name="type_appareil" class="form-select" required>
+            <option value="CO2 2kg">CO2 2Kg</option>
+            <option value="CO2 5kg">CO2 5Kg</option>
+            <option value="CO2 10kg">CO2 10Kg</option>
+            <option value="Poudre ABC 2kg">Poudre ABC 2kg</option>
+            <option value="Poudre ABC 6kg">Poudre ABC 6kg</option>
+            <option value="Poudre ABC 9kg">Poudre ABC 9kg</option>
+            <option value="Poudre ABC 50kg">Poudre ABC 50kg</option>
+            <option value="Eau + add 6Lts">Eau + add 6Lts</option>
+            <option value="Eau + add 9Lts">Eau + add 9Lts</option>
+            <option value="Eau + add 50Lts">Eau + add 50Lts</option>
+            <option value="autres">Autres</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label"><i class="fas fa-info-circle me-1" style="color:var(--steel)"></i>Statut *</label>
+          <select name="statut_appareil" class="form-select" required>
+            <option value="conforme">✅ Conforme</option>
+            <option value="Hors service">❌ Hors service</option>
+            <option value="Vide">⚠️ Vide</option>
+            <option value="Périmé d'epreuve">🔴 Périmé d'épreuve</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label"><i class="fas fa-clipboard me-1" style="color:var(--steel)"></i>Observation</label>
+          <textarea name="observation" class="form-control" rows="2"
+                    placeholder="Remarques, actions à mener..."></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success mt-3" style="font-weight:700">
+        <i class="fas fa-plus me-2"></i>Ajouter l'item
+      </button>
+    </form>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

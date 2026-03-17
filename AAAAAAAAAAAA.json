@@ -1,0 +1,74 @@
+[
+    {
+        "emplacement": "boutique",
+        "id": 1,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "Hors service",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "boutique",
+        "id": 2,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "boutique",
+        "id": 3,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "etage",
+        "id": 4,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "sallon",
+        "id": 5,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "sallon",
+        "id": 6,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "sallon",
+        "id": 7,
+        "observation": "RAS",
+        "rapport_id": 1,
+        "statut_appareil": "vide",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "sallon",
+        "id": 8,
+        "observation": "RAS",
+        "rapport_id": 2,
+        "statut_appareil": "Hors service",
+        "type_appareil": "CO2 2kg"
+    },
+    {
+        "emplacement": "atelier",
+        "id": 9,
+        "observation": "     Poser une étiquette       ",
+        "rapport_id": 1,
+        "statut_appareil": "conforme",
+        "type_appareil": "Eau + add 9Lts"
+    }
+]

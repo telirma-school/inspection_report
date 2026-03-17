@@ -1,0 +1,56 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg main-navbar" role="navigation" aria-label="Navigation principale">
+  <div class="container-fluid px-2">
+    <a class="navbar-brand" href="{% url 'article:home' %}">
+      <img src="{% static 'images/logo_telirma2.jpg' %}" alt="Logo TELIRMA" loading="lazy"/>
+      <span>TEL</span>IRMA
+    </a>
+    <button class="navbar-toggler" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false" aria-label="Ouvrir le menu">
+      <i class="fas fa-bars" style="color:white;font-size:16px"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto mb-0">
+        <li class="nav-item">
+          <a class="nav-link {% block nav_home %}{% endblock %}" href="{% url 'article:home' %}">
+            <i class="fas fa-home"></i> Accueil
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% block nav_blog %}{% endblock %}" href="{% url 'article:blog' %}">
+            <i class="fas fa-newspaper"></i> Blog
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% block nav_boutique %}{% endblock %}" href="{% url 'article:boutique' %}">
+            <i class="fas fa-store"></i> Boutique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% block nav_crm %}{% endblock %}" href="{% url 'article:crm' %}">
+            <i class="fas fa-users"></i> CRM
+          </a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center flex-wrap navbar-auth-row" style="gap:8px">
+        {% if user.is_authenticated %}
+          <span class="user-badge">
+            <i class="fas fa-user-circle"></i>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px">{{ user.username }}</span>
+          </span>
+          <a class="btn-nav-logout" href="{% url 'article:logout' %}">
+            <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
+          </a>
+        {% else %}
+          <a class="btn-nav-login" href="{% url 'article:login' %}">
+            <i class="fas fa-sign-in-alt me-1"></i>Connexion
+          </a>
+          <a class="btn-nav-login" href="{% url 'article:register' %}">
+            <i class="fas fa-user-plus me-1"></i>Inscription
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

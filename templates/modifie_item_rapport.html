@@ -1,0 +1,73 @@
+{% extends 'main.html' %}
+{% block title %}Modifier item — TELIRMA{% endblock %}
+
+{% block contend %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-edit me-2" style="color:var(--steel)"></i>Modifier un item</h1>
+    <p>Mettre à jour les informations de cet équipement</p>
+  </div>
+  <a href="javascript:history.back()" class="btn btn-outline-primary btn-sm">
+    <i class="fas fa-arrow-left me-1"></i>Retour
+  </a>
+</div>
+<div class="row justify-content-center">
+  <div class="col-12 col-md-10 col-lg-8">
+    <div class="card border-0" style="-webkit-box-shadow:0 4px 24px rgba(13,43,94,0.1);box-shadow:0 4px 24px rgba(13,43,94,0.1)">
+      <div style="height:4px;background:-webkit-linear-gradient(left,var(--navy),var(--steel),var(--sky));background:linear-gradient(90deg,var(--navy),var(--steel),var(--sky))"></div>
+      <div class="card-body p-4">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="rapport" value="{{ item_rapport.rapport.id }}"/>
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label"><i class="fas fa-map-marker-alt me-1" style="color:var(--steel)"></i>Emplacement *</label>
+              <input type="text" name="emplacement" class="form-control"
+                     value="{{ item_rapport.emplacement }}" required/>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label"><i class="fas fa-fire-extinguisher me-1" style="color:var(--steel)"></i>Type d'appareil *</label>
+              <select name="type_appareil" class="form-select" required>
+                {% with current=item_rapport.type_appareil %}
+                <option value="CO2 2kg"         {% if current == "CO2 2kg" %}selected{% endif %}>CO2 2Kg</option>
+                <option value="CO2 5kg"          {% if current == "CO2 5kg" %}selected{% endif %}>CO2 5Kg</option>
+                <option value="CO2 10kg"         {% if current == "CO2 10kg" %}selected{% endif %}>CO2 10Kg</option>
+                <option value="Poudre ABC 2kg"   {% if current == "Poudre ABC 2kg" %}selected{% endif %}>Poudre ABC 2kg</option>
+                <option value="Poudre ABC 6kg"   {% if current == "Poudre ABC 6kg" %}selected{% endif %}>Poudre ABC 6kg</option>
+                <option value="Poudre ABC 9kg"   {% if current == "Poudre ABC 9kg" %}selected{% endif %}>Poudre ABC 9kg</option>
+                <option value="Poudre ABC 50kg"  {% if current == "Poudre ABC 50kg" %}selected{% endif %}>Poudre ABC 50kg</option>
+                <option value="Eau + add 6Lts"   {% if current == "Eau + add 6Lts" %}selected{% endif %}>Eau + add 6Lts</option>
+                <option value="Eau + add 9Lts"   {% if current == "Eau + add 9Lts" %}selected{% endif %}>Eau + add 9Lts</option>
+                <option value="Eau + add 50Lts"  {% if current == "Eau + add 50Lts" %}selected{% endif %}>Eau + add 50Lts</option>
+                <option value="autres"           {% if current == "autres" %}selected{% endif %}>Autres</option>
+                {% endwith %}
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label"><i class="fas fa-info-circle me-1" style="color:var(--steel)"></i>Statut *</label>
+              <select name="statut_appareil" class="form-select" required>
+                {% with current=item_rapport.statut_appareil %}
+                <option value="conforme"          {% if current == "conforme" %}selected{% endif %}>✅ Conforme</option>
+                <option value="Hors service"      {% if current == "Hors service" %}selected{% endif %}>❌ Hors service</option>
+                <option value="Vide"              {% if current == "Vide" %}selected{% endif %}>⚠️ Vide</option>
+                <option value="Périmé d'epreuve"  {% if current == "Périmé d'epreuve" %}selected{% endif %}>🔴 Périmé d'épreuve</option>
+                {% endwith %}
+              </select>
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label"><i class="fas fa-clipboard me-1" style="color:var(--steel)"></i>Observation</label>
+              <textarea name="observation" class="form-control" rows="3">{{ item_rapport.observation }}</textarea>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button type="submit" class="btn btn-primary px-4" style="font-weight:700">
+              <i class="fas fa-save me-2"></i>Enregistrer
+            </button>
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">Annuler</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

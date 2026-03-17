@@ -1,0 +1,99 @@
+{% extends 'main.html' %}
+{% block title %}{{ client_data.name }} — TELIRMA{% endblock %}
+
+{% block contend %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-building me-2" style="color:var(--steel)"></i>{{ client_data.name }}</h1>
+    <p>Détails et historique des rapports</p>
+  </div>
+  <a href="{% url 'article:crm' %}" class="btn btn-outline-primary btn-sm">
+    <i class="fas fa-arrow-left me-1"></i>Retour CRM
+  </a>
+</div>
+
+<div class="card border-0 mb-4" style="box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div class="card-header-blue"><i class="fas fa-id-card me-2"></i>Informations client</div>
+  <div class="card-body">
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <div class="form-label">Adresse</div>
+        <div style="font-weight:600;color:var(--text)">{{ client_data.address|default:"—" }}</div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="form-label">Email</div>
+        <div style="font-weight:600;color:var(--text);word-break:break-word">{{ client_data.email|default:"—" }}</div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="form-label">Téléphone</div>
+        <div style="font-weight:600;color:var(--text)">{{ client_data.phone_number|default:"—" }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0" style="box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div class="card-header-blue d-flex justify-content-between align-items-center">
+    <span><i class="fas fa-file-alt me-2"></i>Rapports de {{ client_data.name }}</span>
+    <span class="badge" style="background:rgba(255,255,255,0.2)">
+      {{ rapport_client|length }} rapport{{ rapport_client|length|pluralize }}
+    </span>
+  </div>
+  <div class="card-body p-0">
+    {% if rapport_client %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>N° Rapport</th>
+            <th class="d-none d-sm-table-cell">Client</th>
+            <th class="d-none d-md-table-cell">Date création</th>
+            <th class="d-none d-lg-table-cell">Titre</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rapport_client %}
+          <tr>
+            <td style="color:var(--muted)">{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'article:contenuRapport' r.rapport_number %}"
+                 style="color:var(--steel);font-weight:700;text-decoration:none">
+                {{ r.rapport_number }}
+              </a>
+            </td>
+            <td class="d-none d-sm-table-cell">{{ r.client.name }}</td>
+            <td class="d-none d-md-table-cell">
+              <span style="background:var(--ice);color:var(--navy);padding:3px 8px;border-radius:6px;font-size:12px">
+                {{ r.create_at }}
+              </span>
+            </td>
+            <td class="d-none d-lg-table-cell" style="font-size:13px">{{ r.titre }}</td>
+            <td class="text-center" style="white-space:nowrap">
+              <a href="{% url 'article:contenuRapport' r.rapport_number %}"
+                 class="btn btn-sm btn-outline-primary me-1"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'article:rapport_pdf' r.rapport_number %}"
+                 class="btn btn-sm btn-outline-danger"><i class="fas fa-file-pdf"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+      <i class="fas fa-file-alt fa-2x mb-2 d-block" style="opacity:.3"></i>Aucun rapport pour ce client
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="mt-3">
+  <a href="{% url 'article:createRapport' %}" class="btn btn-primary">
+    <i class="fas fa-plus me-2"></i>Créer un rapport pour ce client
+  </a>
+</div>
+{% endif %}
+{% endblock %}

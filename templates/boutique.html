@@ -1,0 +1,70 @@
+{% extends 'main.html' %}
+{% block title %}Boutique — TELIRMA{% endblock %}
+{% block nav_boutique %}active{% endblock %}
+
+{% block contend %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-store me-2" style="color:var(--steel)"></i>Boutique</h1>
+    <p>{{ liste_produits|length }} produit{{ liste_produits|length|pluralize }} disponible{{ liste_produits|length|pluralize }}</p>
+  </div>
+  {% if user.is_authenticated %}
+  <a href="{% url 'article:createProduit' %}" class="btn btn-primary btn-sm">
+    <i class="fas fa-plus me-1"></i>Nouveau produit
+  </a>
+  {% endif %}
+</div>
+
+{% if liste_produits %}
+<div class="row g-3">
+  {% for prod in liste_produits %}
+  <div class="col-6 col-md-4 col-lg-3">
+    <div class="card h-100 border-0 card-hover" style="box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+      {% if prod.image %}
+      <div style="height:180px;overflow:hidden;border-radius:12px 12px 0 0">
+        <img src="{{ prod.get_image_url }}" style="width:100%;height:100%;object-fit:cover"
+             alt="{{ prod.nom }}" loading="lazy"/>
+      </div>
+      {% else %}
+      <div style="height:180px;background:var(--ice);border-radius:12px 12px 0 0;
+                  display:-webkit-box;display:-ms-flexbox;display:flex;
+                  -webkit-box-align:center;-ms-flex-align:center;align-items:center;
+                  -webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;
+                  -webkit-box-orient:vertical;-webkit-box-direction:normal;
+                  -ms-flex-direction:column;flex-direction:column">
+        <i class="fas fa-box fa-3x mb-2" style="color:var(--muted)"></i>
+        <span style="color:var(--muted);font-size:12px">Pas d'image</span>
+      </div>
+      {% endif %}
+      <div class="card-body d-flex flex-column">
+        <h5 style="font-family:'Exo 2',sans-serif;font-weight:700;color:var(--navy);font-size:14px">
+          {{ prod.nom }}
+        </h5>
+        <p class="text-muted flex-grow-1" style="font-size:12px;line-height:1.5">
+          {{ prod.description|truncatechars:80 }}
+        </p>
+        <div class="d-flex justify-content-between align-items-center mt-2 flex-wrap" style="gap:6px">
+          <span style="font-size:16px;font-weight:800;color:var(--steel)">
+            {{ prod.prix }} <small style="font-size:10px;font-weight:600;color:var(--muted)">FCFA</small>
+          </span>
+          <button class="btn btn-primary btn-sm">
+            <i class="fas fa-info-circle me-1"></i>Détails
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+  <i class="fas fa-box-open fa-3x mb-3" style="color:var(--muted);opacity:.4"></i>
+  <h5 style="color:var(--muted)">Aucun produit disponible</h5>
+  {% if user.is_authenticated %}
+  <a href="{% url 'article:createProduit' %}" class="btn btn-primary mt-3">
+    <i class="fas fa-plus me-2"></i>Ajouter le premier produit
+  </a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

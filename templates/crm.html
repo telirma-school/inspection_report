@@ -1,0 +1,145 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block title %}CRM — TELIRMA{% endblock %}
+{% block nav_crm %}active{% endblock %}
+
+{% block contend %}
+<div class="page-header">
+  <div>
+    <h1><i class="fas fa-users me-2" style="color:var(--steel)"></i>CRM</h1>
+    <p>Gestion clients &amp; rapports de vérification</p>
+  </div>
+  {% if user.is_authenticated %}
+  <a href="{% url 'article:createRapport' %}" class="btn btn-primary btn-sm">
+    <i class="fas fa-file-plus me-1"></i>Nouveau rapport
+  </a>
+  {% endif %}
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-4">
+    <div class="card border-0 text-center py-3" style="box-shadow:0 2px 12px rgba(13,43,94,0.08);border-left:4px solid var(--steel) !important">
+      <div class="card-body p-2">
+        <div class="stat-number" style="color:var(--steel)">{{ liste_client|length }}</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Clients</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="card border-0 text-center py-3" style="box-shadow:0 2px 12px rgba(13,43,94,0.08);border-left:4px solid var(--success) !important">
+      <div class="card-body p-2">
+        <div class="stat-number" style="color:var(--success)">{{ liste_rapport|length }}</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Rapports</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-4">
+    <div class="card border-0 text-center py-3" style="box-shadow:0 2px 12px rgba(13,43,94,0.08);border-left:4px solid var(--warning) !important">
+      <div class="card-body p-2">
+        <div class="stat-number" style="color:var(--warning)">{{ liste_rapport_item|length }}</div>
+        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Items</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Clients -->
+<div class="card border-0 mb-4" style="box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div class="card-header-blue"><i class="fas fa-user-tie me-2"></i>Liste des Clients</div>
+  <div class="card-body p-0">
+    {% if liste_client %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th><i class="fas fa-user me-1"></i>Nom</th>
+            <th class="d-none d-md-table-cell"><i class="fas fa-envelope me-1"></i>Email</th>
+            <th class="d-none d-sm-table-cell"><i class="fas fa-phone me-1"></i>Téléphone</th>
+            <th class="d-none d-lg-table-cell"><i class="fas fa-map-marker-alt me-1"></i>Adresse</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in liste_client %}
+          <tr>
+            <td style="color:var(--muted)">{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'article:detailClient' c.name %}"
+                 style="color:var(--steel);font-weight:600;text-decoration:none">
+                <i class="fas fa-building me-1"></i>{{ c.name }}
+              </a>
+            </td>
+            <td class="d-none d-md-table-cell">{{ c.email|default:"—" }}</td>
+            <td class="d-none d-sm-table-cell">{{ c.phone_number|default:"—" }}</td>
+            <td class="d-none d-lg-table-cell" style="font-size:13px">{{ c.address|truncatechars:40 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+      <i class="fas fa-users fa-2x mb-2 d-block" style="opacity:.3"></i>Aucun client enregistré
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Rapports -->
+<div class="card border-0" style="box-shadow:0 2px 16px rgba(13,43,94,0.09)">
+  <div class="card-header-blue"><i class="fas fa-file-alt me-2"></i>Liste des Rapports</div>
+  <div class="card-body p-0">
+    {% if liste_rapport %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th><i class="fas fa-hashtag me-1"></i>N° Rapport</th>
+            <th class="d-none d-sm-table-cell"><i class="fas fa-building me-1"></i>Client</th>
+            <th class="d-none d-md-table-cell"><i class="fas fa-calendar me-1"></i>Date vérif.</th>
+            <th class="d-none d-lg-table-cell"><i class="fas fa-align-left me-1"></i>Titre</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in liste_rapport %}
+          <tr>
+            <td style="color:var(--muted)">{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'article:contenuRapport' r.rapport_number %}"
+                 style="color:var(--steel);font-weight:700;text-decoration:none">
+                {{ r.rapport_number }}
+              </a>
+            </td>
+            <td class="d-none d-sm-table-cell">{{ r.client.name|default:"—" }}</td>
+            <td class="d-none d-md-table-cell">
+              <span style="background:var(--ice);color:var(--navy);padding:3px 8px;border-radius:6px;font-size:12px">
+                {{ r.date_verification }}
+              </span>
+            </td>
+            <td class="d-none d-lg-table-cell" style="font-size:13px">{{ r.titre|truncatechars:45 }}</td>
+            <td class="text-center" style="white-space:nowrap">
+              <a href="{% url 'article:modifie_rapport' r.id %}"
+                 class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a href="{% url 'article:rapport_pdf' r.rapport_number %}"
+                 class="btn btn-sm btn-outline-danger" title="PDF">
+                <i class="fas fa-file-pdf"></i>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="text-center py-4 text-muted">
+      <i class="fas fa-file-alt fa-2x mb-2 d-block" style="opacity:.3"></i>Aucun rapport créé
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
