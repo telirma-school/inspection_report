@@ -125,7 +125,7 @@ class RapportItem(models.Model):
 
 class Profil(models.Model):
      user = models.OneToOneField(User,on_delete=models.SET_NULL,null="True")#liaison du profil au model user
-     function = models.CharField()
+     function = models.CharField(max_length=100) 
      date_de_naissance = models.DateField(auto_now_add=True)
      sexe = models.CharField(max_length=1)
      photo_profil = models.ImageField(null=True,blank=True,upload_to="photo_profil/")
